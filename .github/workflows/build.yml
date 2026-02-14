@@ -154,6 +154,8 @@ jobs:
           path: artifact/
 
   build-macos:
+    if: false
+    # disabled until zlib can be updated
     name: MacOS Fat
     runs-on: macos-latest
     steps:
