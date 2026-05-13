@@ -153,92 +153,92 @@ jobs:
           name: hatarib-ubuntu--${{ env.BUILD_TAG }}
           path: artifact/
 
-  build-macos:
-    name: MacOS Fat
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Files
-        uses: actions/checkout@v4
-      - name: Submodule Cache Key
-        run: |
-          echo "SDLHASH=$(git submodule status SDL | tr -d '[:blank:]')" >> $GITHUB_ENV
-          echo "ZLIBHASH=$(git submodule status zlib | tr -d '[:blank:]')" >> $GITHUB_ENV
-      - name: Cache Submodules
-        id: cache-sub
-        uses: actions/cache@v4
-        with:
-          path: |
-            SDL/build
-            zlib_build_arm
-            zlib_build_intel
-          key: sub-macos-${{ env.SDLHASH }}-${{ env.ZLIBHASH }}
-      - name: Build SDL2 and zlib
-        if: steps.cache-sub.outputs.cache-hit != 'true'
-        run: |
-          export CC=clang
-          export CFLAGS="-target arm64-apple-macos11"
-          export ZLIB_BUILD=zlib_build_arm
-          make -f makefile.zlib
-          export CFLAGS="-target x86_64-apple-macos10.13"
-          export ZLIB_BUILD=zlib_build_intel
-          make -f makefile.zlib
-          export CFLAGS=
-          export CC=$(PWD)/SDL/build-scripts/clang-fat.sh
-          make -f makefile.sdl
-      - name: Build hatariB
-        run: |
-          export CC_OLD=$CC
-          export BD=build_arm
-          export HBD=build_arm
-          export ZLIB_BUILD=zlib_build_arm
-          export CMAKEFLAGS="-DCMAKE_C_COMPILER=clang -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_SYSTEM_NAME=Darwin"
-          make hatarilib
-          export CC=clang
-          export CFLAGS="-target arm64-apple-macos11"
-          export LDFLAGS="-target arm64-apple-macos11"
-          make core
-          export BD=build_intel
-          export HBD=build_intel
-          export ZLIB_BUILD=zlib_build_intel
-          export CC=$CC_OLD
-          export CFLAGS=
-          export LDFLAGS=
-          export CMAKEFLAGS="-DCMAKE_C_COMPILER=clang -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_SYSTEM_NAME=Darwin"
-          make hatarilib
-          export CC=clang
-          export CFLAGS="-target x86_64-apple-macos10.13"
-          export LDFLAGS="-target x86_64-apple-macos10.13"
-          make core
-          strip -u -r build_arm/hatarib.dylib
-          strip -u -r build_intel/hatarib.dylib
-          mkdir -p build
-          lipo -create -output build/hatarib.dylib build_arm/hatarib.dylib build_intel/hatarib.dylib
-      - name: Prepare Signature
-        if: github.event_name != 'pull_request'
-        env:
-          CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-        run: echo $CERTIFICATE | base64 --decode -o certificate.p12
-      - name: Sign Dylib
-        if: github.event_name != 'pull_request'
-        uses: indygreg/apple-code-sign-action@v1.0
-        with:
-          input_path: build/hatarib.dylib
-          p12_file: certificate.p12
-          p12_password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-      - name: Prepare Artifact
-        run: |
-          mkdir artifact
-          cp README.md artifact
-          mkdir artifact/cores
-          cp build/*.dylib artifact/cores
-          mkdir artifact/info
-          cp info/*.* artifact/info
-          echo "BUILD_TAG=$(git log -1 --format="%ad--%h" --date=format-local:"%Y-%m-%d-%H%M%S")" >> $GITHUB_ENV
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hatarib-macos--${{ env.BUILD_TAG }}
-          path: artifact/
+#  build-macos:
+#    name: MacOS Fat
+#    runs-on: macos-latest
+#    steps:
+#      - name: Checkout Files
+#        uses: actions/checkout@v4
+#      - name: Submodule Cache Key
+#        run: |
+#          echo "SDLHASH=$(git submodule status SDL | tr -d '[:blank:]')" >> $GITHUB_ENV
+#          echo "ZLIBHASH=$(git submodule status zlib | tr -d '[:blank:]')" >> $GITHUB_ENV
+#      - name: Cache Submodules
+#        id: cache-sub
+#        uses: actions/cache@v4
+#        with:
+#          path: |
+#            SDL/build
+#            zlib_build_arm
+#            zlib_build_intel
+#          key: sub-macos-${{ env.SDLHASH }}-${{ env.ZLIBHASH }}
+#      - name: Build SDL2 and zlib
+#        if: steps.cache-sub.outputs.cache-hit != 'true'
+#        run: |
+#          export CC=clang
+#          export CFLAGS="-target arm64-apple-macos11"
+#          export ZLIB_BUILD=zlib_build_arm
+#          make -f makefile.zlib
+#          export CFLAGS="-target x86_64-apple-macos10.13"
+#          export ZLIB_BUILD=zlib_build_intel
+#          make -f makefile.zlib
+#          export CFLAGS=
+#          export CC=$(PWD)/SDL/build-scripts/clang-fat.sh
+#          make -f makefile.sdl
+#      - name: Build hatariB
+#        run: |
+#          export CC_OLD=$CC
+#          export BD=build_arm
+#          export HBD=build_arm
+#          export ZLIB_BUILD=zlib_build_arm
+#          export CMAKEFLAGS="-DCMAKE_C_COMPILER=clang -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_SYSTEM_NAME=Darwin"
+#          make hatarilib
+#          export CC=clang
+#          export CFLAGS="-target arm64-apple-macos11"
+#          export LDFLAGS="-target arm64-apple-macos11"
+#          make core
+#          export BD=build_intel
+#          export HBD=build_intel
+#          export ZLIB_BUILD=zlib_build_intel
+#          export CC=$CC_OLD
+#          export CFLAGS=
+#          export LDFLAGS=
+#          export CMAKEFLAGS="-DCMAKE_C_COMPILER=clang -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_SYSTEM_NAME=Darwin"
+#          make hatarilib
+#          export CC=clang
+#          export CFLAGS="-target x86_64-apple-macos10.13"
+#          export LDFLAGS="-target x86_64-apple-macos10.13"
+#          make core
+#          strip -u -r build_arm/hatarib.dylib
+#          strip -u -r build_intel/hatarib.dylib
+#          mkdir -p build
+#          lipo -create -output build/hatarib.dylib build_arm/hatarib.dylib build_intel/hatarib.dylib
+#      - name: Prepare Signature
+#        if: github.event_name != 'pull_request'
+#        env:
+#          CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+#        run: echo $CERTIFICATE | base64 --decode -o certificate.p12
+#      - name: Sign Dylib
+#        if: github.event_name != 'pull_request'
+#        uses: indygreg/apple-code-sign-action@v1.0
+#        with:
+#          input_path: build/hatarib.dylib
+#          p12_file: certificate.p12
+#          p12_password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+#      - name: Prepare Artifact
+#        run: |
+#          mkdir artifact
+#          cp README.md artifact
+#          mkdir artifact/cores
+#          cp build/*.dylib artifact/cores
+#          mkdir artifact/info
+#          cp info/*.* artifact/info
+#          echo "BUILD_TAG=$(git log -1 --format="%ad--%h" --date=format-local:"%Y-%m-%d-%H%M%S")" >> $GITHUB_ENV
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: hatarib-macos--${{ env.BUILD_TAG }}
+#          path: artifact/
 
   build-rpi64:
     name: Raspberry Pi OS 64-bit
