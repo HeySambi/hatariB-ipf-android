@@ -865,6 +865,11 @@ const char* core_file_system_filename(int index)
 
 int core_file_system_dir_count()
 {
+
+	const char* core_get_system_path(void)
+{
+        return system_path;
+}
 	return sf_dir_count;
 }
 
