@@ -865,11 +865,6 @@ const char* core_file_system_filename(int index)
 
 int core_file_system_dir_count()
 {
-
-	const char* core_get_system_path(void)
-{
-        return system_path;
-}
 	return sf_dir_count;
 }
 
@@ -883,4 +878,9 @@ const char* core_file_system_dirlabel(int index)
 {
 	if (index >= sf_dir_count) return "";
 	return sf_dirlabel[index];
+}
+
+	const char* core_get_system_path(void)
+{
+        return system_path;
 }
