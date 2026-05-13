@@ -4,6 +4,7 @@ It is intended for use on Android only, is untested on all other platforms, and 
 The change is that when locating capsimg.so, hatariB will now look in the system folder designated by RetroArch. This allows working around the restriction on android that capsimg.so cannot be loaded from user accessible file space. 
 
 --Usage--
+
 Install capsimg.so as a core within retroarch. It does not need to be loaded, only installed. 
 
 Copy hatariB.cfg to the retroarch config folder. 
