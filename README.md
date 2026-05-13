@@ -1,3 +1,18 @@
+This is a version of hatariB with a very minor tweak to allow for ipf file usage on Android.
+It is intended for use on Android only, is untested on all other platforms, and explicitly does not support MacOS. Other platforms are almost certainly better off using regular hatariB.
+
+The change is that when locating capsimg.so, hatariB will now look in the system folder designated by RetroArch. This allows working around the restriction on android that capsimg.so cannot be loaded from user accessible file space. 
+
+--Usage--
+Install capsimg.so as a core within retroarch. It does not need to be loaded, only installed. 
+
+Copy hatariB.cfg to the retroarch config folder. 
+By default this is 
+/RetroArch/config/hatariB/
+
+Futher instructions relating to installing the hatariB core itself can be found further down in this ReadMe. 
+
+
 # hatariB
 
 
