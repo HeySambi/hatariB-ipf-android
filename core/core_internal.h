@@ -105,6 +105,7 @@ extern const char* core_file_system_filename(int index); // file list, first is 
 extern int core_file_system_dir_count();
 extern const char* core_file_system_dirname(int index); // "hatarib/dir"
 extern const char* core_file_system_dirlabel(int index); // "dir/"
+extern const char* core_get_system_path(void); // returns RetroArch system directory path (with trailing /)
 
 // core_disk.c
 extern uint8_t* unzip_gz(const uint8_t* gz_data, size_t gz_size, const char* gz_filename, size_t* filesize, size_t size_estimate);
