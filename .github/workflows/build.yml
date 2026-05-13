@@ -401,6 +401,8 @@ jobs:
           cp build/*.so artifact/cores
           mkdir artifact/info
           cp info/*.* artifact/info
+          mkdir artifact/config
+          cp extras/hatariB.cfg artifact/config
           echo "BUILD_TAG=$(git log -1 --format="%ad--%h" --date=format-local:"%Y-%m-%d-%H%M%S")" >> $GITHUB_ENV
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -465,6 +467,8 @@ jobs:
           cp build/*.so artifact/cores
           mkdir artifact/info
           cp info/*.* artifact/info
+          mkdir artifact/config
+          cp extras/hatariB.cfg artifact/config
           echo "BUILD_TAG=$(git log -1 --format="%ad--%h" --date=format-local:"%Y-%m-%d-%H%M%S")" >> $GITHUB_ENV
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
