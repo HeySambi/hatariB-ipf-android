@@ -696,8 +696,21 @@ static bool core_ipf_load(void)
 	capsHandle = LoadLibrary(CAPS_SONAME);
 #else
 #ifdef HAVE_DLOPEN
-	capsHandle = dlopen(CAPS_SONAME, RTLD_NOW);
-	if (!capsHandle) core_error_printf("%s\n",dlerror());
+	extern const char* core_get_system_path(void);
+	const char* syspath = core_get_system_path();
+	if (syspath && syspath[0])
+	{
+		char fullpath[2048];
+		snprintf(fullpath, sizeof(fullpath), "%s" CAPS_SONAME, syspath);
+		core_info_printf("IPF : trying capsimg from system path: %s\n", fullpath);
+		capsHandle = dlopen(fullpath, RTLD_NOW);
+	}
+	if (!capsHandle)
+	{
+		core_info_printf("IPF : trying capsimg from OS library path\n");
+		capsHandle = dlopen(CAPS_SONAME, RTLD_NOW);
+		if (!capsHandle) core_error_printf("%s\n",dlerror());
+	}
 #else
 	core_error_printf("dlopen unavailable\n");
 #endif
