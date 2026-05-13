@@ -5,6 +5,8 @@ The change is that when locating capsimg.so, hatariB will now look in the system
 
 --Usage--
 
+[Download capsimg 5.1 for retroarch from here](https://github.com/rsn8887/capsimg/releases) 
+
 Install capsimg.so as a core within retroarch. It does not need to be loaded, only installed. 
 
 Copy hatariB.cfg to the retroarch config folder. 
